@@ -1,0 +1,16 @@
+# This file has to be replaced via volume mounting.
+spring:
+  kafka:
+    streams:
+      application-id: wikipedia
+      properties:
+        replication.factor: 1
+    bootstrap-servers:
+      - kafka:9092
+    properties:
+      security.protocol: PLAINTEXT
+
+wikipedia:
+  topics:
+    input: wikipedia.parsed
+    output: wikipedia.parsed.count-by-domain
