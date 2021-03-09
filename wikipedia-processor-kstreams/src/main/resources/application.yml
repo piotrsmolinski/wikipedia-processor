@@ -1,6 +1,6 @@
 spring:
   main:
-    banner-mode: log
+    banner-mode: console
   kafka:
     streams:
       application-id: wikipedia
