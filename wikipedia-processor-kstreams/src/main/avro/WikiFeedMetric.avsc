@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "WikiFeedMetric",
+  "namespace": "dev.psmolinski.kafka.wikipedia.model",
+  "fields": [
+    {
+      "name": "domain",
+      "type": "string",
+      "doc": "Associated domain"
+    },
+    {
+      "name": "editCount",
+      "type": "long",
+      "doc": "The count of edits for the domain"
+    }
+  ]
+}
