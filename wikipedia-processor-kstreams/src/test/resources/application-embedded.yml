@@ -1,0 +1,21 @@
+spring:
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    producer:
+      acks: all
+    streams:
+      properties:
+        state.dir: target/kafka-streams
+        replication.factor: 1
+        schema.registry.url: mock://test
+
+wikipedia:
+  topics:
+    input: wikipedia.parsed
+    output: wikipedia.parsed.count-by-domain
+
+logging:
+  level:
+    root: INFO
+    # org.apache.kafka.streams: DEBUG
+    # org.apache.kafka.clients.NetworkClient: TRACE
