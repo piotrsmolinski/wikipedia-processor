@@ -1,5 +1,8 @@
 FROM openjdk:8-jdk-slim
 
+RUN useradd appuser
+
+RUN mkdir -p /app/state  && chown appuser /app/state
 VOLUME /app/state
 
 COPY maven/lib /app/lib
@@ -9,7 +12,6 @@ COPY config /app/config
 
 WORKDIR /app
 
-RUN useradd appuser
 USER appuser
 
 CMD ["java","-cp","lib/*","dev.psmolinski.kafka.wikipedia.WikipediaApplication"]
