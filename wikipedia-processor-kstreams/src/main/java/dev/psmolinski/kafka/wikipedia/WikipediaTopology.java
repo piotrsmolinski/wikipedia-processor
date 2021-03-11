@@ -21,11 +21,9 @@ public class WikipediaTopology {
     private final static Logger log = LoggerFactory.getLogger(WikipediaTopology.class);
 
     private final WikipediaProperties wikipediaProperties;
-    private final KafkaProperties kafkaProperties;
 
-    public WikipediaTopology(WikipediaProperties wikipediaProperties, KafkaProperties kafkaProperties) {
+    public WikipediaTopology(WikipediaProperties wikipediaProperties) {
         this.wikipediaProperties = wikipediaProperties;
-        this.kafkaProperties = kafkaProperties;
     }
 
     /**
