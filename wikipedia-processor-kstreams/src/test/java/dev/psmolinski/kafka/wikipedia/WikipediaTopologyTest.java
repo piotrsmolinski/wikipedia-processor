@@ -13,13 +13,26 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Test case with {@link TopologyTestDriver}. The test is Spring Boot independent, although it is
+ * possible to leverage some configuration classes.
+ * <br/>
+ * The test focuses on the Kafka Streams topology itself. The huge advantage is that all the
+ * processing in the topology is done on explicit trigger and the control does not return
+ * to the caller until the action is fully completed. This includes also message routing
+ * through a topic (for example for repartitioning), which normally results in two consecutive
+ * graph processing.
+ * <br/>
+ * The disadvantage is that the code is not executed by the regular Kafka Streams orchestration.
+ * Therefore we test something executed using different codebase than the normal app.
+ *
+ */
 public class WikipediaTopologyTest {
 
     private TopologyTestDriver testDriver;
@@ -44,32 +57,28 @@ public class WikipediaTopologyTest {
                 )
                 .build();
 
-        KafkaProperties kafkaProperties = new KafkaProperties();
-        kafkaProperties.getStreams().setStateDir("target/test/streams");
-        kafkaProperties.getStreams().setApplicationId("test");
-        kafkaProperties.getStreams().setBootstrapServers(Arrays.asList("localhost:9092"));
-        kafkaProperties.getStreams().getProperties().put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
-        kafkaProperties.getStreams().getProperties().put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class.getName());
-        kafkaProperties.getStreams().getProperties().put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://test");
-
-        WikipediaTopology topology = new WikipediaTopology(
-                wikipediaProperties,
-                kafkaProperties
-        );
+        WikipediaTopology topology = new WikipediaTopology(wikipediaProperties);
 
         topology.buildTopology(streamsBuilder);
 
+        // do the cleanup
         FileUtils.deleteDirectory(new File("target/test/streams"));
 
-        Properties config = new Properties();
-
-        config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
-        config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
-
         Topology kstreamTopology = streamsBuilder.build();
+        // it is good to review the topology graph
         System.out.println(kstreamTopology.describe().toString());
 
-        testDriver = new TopologyTestDriver(kstreamTopology, asProperties(kafkaProperties.buildStreamsProperties()));
+        testDriver = new TopologyTestDriver(
+                kstreamTopology,
+                PropertiesBuilder.newBuilder()
+                        .with(StreamsConfig.STATE_DIR_CONFIG, "target/test/streams")
+                        .with(StreamsConfig.APPLICATION_ID_CONFIG, "test")
+                        .with(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
+                        .with(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName())
+                        .with(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class.getName())
+                        .with(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://test")
+                        .build()
+        );
 
         inputTopic = testDriver.createInputTopic(
                 wikipediaProperties.getTopics().getInput(),
@@ -78,7 +87,10 @@ public class WikipediaTopologyTest {
         );
 
         Deserializer<WikiFeedMetric> deserializer = new SpecificAvroDeserializer<>();
-        deserializer.configure(kafkaProperties.buildStreamsProperties(), false);
+        deserializer.configure(MapBuilder.newBuilder(String.class, Object.class)
+                .with(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://test")
+                .build(), false);
+
         outputTopic = testDriver.createOutputTopic(
                 wikipediaProperties.getTopics().getOutput(),
                 new StringDeserializer(),
@@ -89,8 +101,13 @@ public class WikipediaTopologyTest {
 
     @AfterEach
     public void afterEach() throws Exception {
-        testDriver.close();
+        if (testDriver!=null) {
+            testDriver.close();
+            testDriver = null;
+        }
     }
+
+    // ---- tests ----
 
     @Test
     public void testSimple() throws Exception {
@@ -111,10 +128,14 @@ public class WikipediaTopologyTest {
         // second edit is reported as bot
         inputTopic.pipeInput(null, readPayload("0-00001.avro"));
 
+        // the test for absence can be executed immediately, no new output messages will be
+        // sent until we call inputTopic.pipeInput or testDriver.advanceWallClockTime
         Assertions.assertThat(outputTopic.getQueueSize())
                 .isEqualTo(0);
 
     }
+
+    // ---- utilities ----
 
     private AvroSchema readSchema(String schema) throws Exception {
         return new AvroSchema(FileUtils.readFileToString(
@@ -127,12 +148,39 @@ public class WikipediaTopologyTest {
         return FileUtils.readFileToByteArray(new File("src/test/data/"+message));
     }
 
-    private Properties asProperties(Map<String, ?> map) {
-        Properties properties = new Properties();
-        for (Map.Entry<String,?> e : map.entrySet()) {
-            properties.put(e.getKey(), e.getValue());
+    /**
+     * Utility to create configuration using fluent API.
+     */
+    private static class PropertiesBuilder {
+        private Properties properties = new Properties();
+        public static PropertiesBuilder newBuilder() {
+            return new PropertiesBuilder();
         }
-        return properties;
+        public PropertiesBuilder with(String k, String v) {
+            properties.put(k, v);
+            return this;
+        }
+        public Properties build() {
+            return properties;
+        }
     }
+
+    /**
+     * Utility to create configuration maps using fluent API.
+     */
+    private static class MapBuilder<K,V> {
+        private Map<K,V> map = new HashMap<>();
+        public static <K,V> MapBuilder<K,V> newBuilder(Class<K> k, Class<V> v) {
+            return new MapBuilder<>();
+        }
+        public MapBuilder<K,V> with(K k, V v) {
+            map.put(k, v);
+            return this;
+        }
+        public Map<K,V> build() {
+            return map;
+        }
+    }
+
 
 }
