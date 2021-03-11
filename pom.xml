@@ -18,7 +18,7 @@
 
     <properties>
 
-        <confluent.version>6.0.0</confluent.version>
+        <confluent.version>6.0.2</confluent.version>
         <kafka.version>2.6.1</kafka.version>
         <scala.version>2.13</scala.version>
 
