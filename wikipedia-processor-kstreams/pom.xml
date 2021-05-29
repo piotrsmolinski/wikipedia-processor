@@ -114,6 +114,7 @@
     </dependencies>
 
     <build>
+        <finalName>wikipedia-processor-kstreams</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.avro</groupId>
