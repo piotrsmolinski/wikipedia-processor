@@ -2,14 +2,21 @@
 spring:
   kafka:
     streams:
+      # set the target application id
       application-id: wikipedia
       properties:
+        # update replication factor to the target value (3 or 4)
         replication.factor: 1
+        # provide the target Schema Registry settings
+        schema.registry.url: http://localhost:8081
+    # set the bootstrap servers
     bootstrap-servers:
       - localhost:9092
+    # update the security parameters
     properties:
       security.protocol: PLAINTEXT
 
+# set the target topics
 wikipedia:
   topics:
     input: wikipedia.parsed
