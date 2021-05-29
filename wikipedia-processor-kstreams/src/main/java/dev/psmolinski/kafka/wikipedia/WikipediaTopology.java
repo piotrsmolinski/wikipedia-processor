@@ -46,13 +46,13 @@ public class WikipediaTopology {
 
         streamsBuilder.<String, GenericRecord>stream(wikipediaProperties.getTopics().getInput(), Consumed.as("input"))
                 // INPUT_TOPIC has no key so use domain as the key
-                .map((key, value) -> new KeyValue<>(((GenericRecord)value.get("meta")).get("domain").toString(), value))
-                .filter((key, value) -> !(boolean)value.get("bot"))
+                .map((key, value) -> new KeyValue<>(((GenericRecord)value.get("meta")).get("domain").toString(), value), Named.as("extract-key"))
+                .filter((key, value) -> !(boolean)value.get("bot"), Named.as("filter-bot"))
                 .groupByKey(Grouped.as("by-domain"))
-                .count(Materialized.as("counts"))
-                .mapValues(WikiFeedMetric::new)
-                .toStream()
-                .peek((key, value) -> log.debug("{}:{}", key, value.getEditCount()))
+                .count(Named.as("count"), Materialized.as("counts"))
+                .toStream(Named.as("to-stream"))
+                .mapValues(WikiFeedMetric::new, Named.as("build-feed"))
+                .peek((key, value) -> log.debug("{}:{}", key, value.getEditCount()), Named.as("debug"))
                 .to(wikipediaProperties.getTopics().getOutput(), Produced.as("output"));
 
     }
