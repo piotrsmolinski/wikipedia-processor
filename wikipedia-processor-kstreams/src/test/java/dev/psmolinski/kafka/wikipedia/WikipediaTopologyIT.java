@@ -309,7 +309,7 @@ public class WikipediaTopologyIT {
          * Normally one would use {@link org.springframework.kafka.config.StreamsBuilderFactoryBeanCustomizer customizer},
          * but spring-kafka {@link org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration#defaultKafkaStreamsBuilder(ObjectProvider, ObjectProvider)
          * default instantiation} supports at most one instance and we have already one
-         * in {@link WikipediaTopology#sbfCustomizer()}.
+         * in {@link WikipediaTopology#sbfConfigurer()}.
          * <br/>
          * Post-processors are executed on any bean available after they are present in the context.
          * The callbacks are fired before the target beans are exposed in the context.

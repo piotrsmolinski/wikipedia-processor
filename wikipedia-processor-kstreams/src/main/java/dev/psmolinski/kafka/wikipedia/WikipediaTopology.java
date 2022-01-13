@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.KafkaStreamsInfrastructureCustomizer;
-import org.springframework.kafka.config.StreamsBuilderFactoryBeanCustomizer;
+import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer;
 
 @Configuration
 @EnableConfigurationProperties(WikipediaProperties.class)
@@ -32,7 +32,7 @@ public class WikipediaTopology {
      * @return
      */
     @Bean
-    public StreamsBuilderFactoryBeanCustomizer sbfCustomizer() {
+    public StreamsBuilderFactoryBeanConfigurer sbfConfigurer() {
         return sbf-> sbf.setInfrastructureCustomizer(
                     new KafkaStreamsInfrastructureCustomizer() {
                         @Override
