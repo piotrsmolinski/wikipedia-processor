@@ -19,8 +19,6 @@ spring:
 
         # target deployment settings to be overridden
 
-        # Schema Registry address
-        schema.registry.url: http://localhost:8081
         # replication factor of 1 is default setting for limited environments; in practice always 3
         replication.factor: 1
 
@@ -28,6 +26,8 @@ spring:
       - localhost:9092
     properties:
       security.protocol: PLAINTEXT
+      # Schema Registry address
+      schema.registry.url: http://localhost:8081
 
 wikipedia:
   topics:

@@ -348,12 +348,10 @@ public class WikipediaTopologyIT {
 
         @Bean
         public ConsumerFactory<String, WikiFeedMetric> countsConsumerFactory() {
-            Deserializer<WikiFeedMetric> deserializer = new SpecificAvroDeserializer<>();
-            deserializer.configure(kafkaProperties.buildStreamsProperties(), false);
             return new DefaultKafkaConsumerFactory<>(
                     kafkaProperties.buildConsumerProperties(),
                     new StringDeserializer(),
-                    deserializer
+                    new SpecificAvroDeserializer<>()
             );
         }
 

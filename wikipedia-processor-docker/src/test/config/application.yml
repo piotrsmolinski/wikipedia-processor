@@ -6,11 +6,11 @@ spring:
       properties:
         replication.factor: 1
         state.dir: state
-        schema.registry.url: http://registry:8081
     bootstrap-servers:
       - kafka:9092
     properties:
       security.protocol: PLAINTEXT
+      schema.registry.url: http://registry:8081
 
 wikipedia:
   topics:
