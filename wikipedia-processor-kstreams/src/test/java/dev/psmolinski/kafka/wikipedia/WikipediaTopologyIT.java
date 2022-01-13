@@ -358,7 +358,7 @@ public class WikipediaTopologyIT {
         }
 
         /**
-         * This bean definition is needed because {@link #suppliersMgmtProducerFactory}
+         * This bean definition is needed because {@link #editsProducerFactory()}
          * prevents default instance from creation.
          * @see org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration#kafkaProducerFactory(ObjectProvider)
          */
@@ -372,7 +372,7 @@ public class WikipediaTopologyIT {
         }
 
         /**
-         * This bean definition is needed because {@link #suppliersMgmtConsumerFactory}
+         * This bean definition is needed because {@link #countsConsumerFactory()}
          * prevents default instance from creation.
          * @see org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration#kafkaConsumerFactory(ObjectProvider)
          */
