@@ -18,22 +18,24 @@
 
     <properties>
 
-        <confluent.version>6.1.1</confluent.version>
-        <kafka.version>2.7.1</kafka.version>
+        <confluent.version>7.0.1</confluent.version>
+        <kafka.version>3.0.0</kafka.version>
         <scala.version>2.13</scala.version>
 
-        <avro.version>1.9.2</avro.version>
+        <avro.version>1.10.1</avro.version>
 
-        <spring.version>5.3.7</spring.version>
-        <spring.boot.version>2.4.2</spring.boot.version>
-        <spring.kafka.version>2.7.1</spring.kafka.version>
+        <spring.version>5.3.14</spring.version>
+        <spring.boot.version>2.6.2</spring.boot.version>
+        <spring.kafka.version>2.8.1</spring.kafka.version>
 
-        <spring.cloud.stream.version>3.1.1</spring.cloud.stream.version>
+        <spring.cloud.stream.version>3.2.1</spring.cloud.stream.version>
 
-        <junit.jupiter.version>5.7.1</junit.jupiter.version>
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <jackson.version>2.13.1</jackson.version>
+
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     </properties>
@@ -223,15 +225,51 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.19.0</version>
+                <version>3.22.0</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.18</version>
+                <version>1.18.22</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-csv</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-scala_2.13</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
 
         </dependencies>
@@ -242,7 +280,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.9.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -265,7 +303,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.36.0</version>
+                <version>0.38.1</version>
                 <extensions>true</extensions>
             </plugin>
             <plugin>
@@ -275,7 +313,5 @@
             </plugin>
         </plugins>
     </build>
-
-
 
 </project>
