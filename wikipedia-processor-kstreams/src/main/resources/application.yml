@@ -1,8 +1,7 @@
 spring:
   main:
-    # the banned is printed to the console output; the downside is that it is not visible
-    # in the log; on the other hand the formatting in the log is broken
-    banner-mode: console
+    # the banned is printed to the log; this requires the first line to be empty to avoid formatting issues
+    banner-mode: log
   kafka:
     streams:
       # application id is typically overridden
