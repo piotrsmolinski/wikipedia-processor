@@ -9,6 +9,9 @@ spring:
       properties:
         state.dir: target/kafka-streams
         replication.factor: 1
+      cleanup:
+        on-startup: true
+        on-shutdown: true
 
 wikipedia:
   topics:

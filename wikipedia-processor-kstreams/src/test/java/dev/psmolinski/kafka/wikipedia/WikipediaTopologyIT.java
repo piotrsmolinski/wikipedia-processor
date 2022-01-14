@@ -295,11 +295,6 @@ public class WikipediaTopologyIT {
         private KafkaProperties kafkaProperties;
 
         @Bean
-        public CleanupConfig cleanupConfig() {
-            return new CleanupConfig(true, true);
-        }
-
-        @Bean
         public CompletableFuture<Void> streamsReady() {
             return new CompletableFuture<>();
         }
