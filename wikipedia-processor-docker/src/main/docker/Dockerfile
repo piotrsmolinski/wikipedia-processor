@@ -2,7 +2,7 @@ FROM openjdk:11-jdk-slim
 
 RUN useradd appuser
 
-RUN mkdir -p /app/state  && chown appuser /app/state
+RUN mkdir -p /app/state && chown appuser /app/state
 VOLUME /app/state
 
 COPY maven/lib /app/lib
