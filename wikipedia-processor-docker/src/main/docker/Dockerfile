@@ -14,4 +14,4 @@ WORKDIR /app
 
 USER appuser
 
-CMD ["java","-cp","lib/*","dev.psmolinski.kafka.wikipedia.WikipediaApplication"]
+CMD ["java", "-Xlog:gc::time,tags,tid,level", "-Dlogging.config=config/log4j2.yml", "-cp", "lib/*", "dev.psmolinski.kafka.wikipedia.WikipediaApplication"]

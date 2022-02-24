@@ -16,3 +16,6 @@ wikipedia:
   topics:
     input: wikipedia.parsed
     output: wikipedia.parsed.count-by-domain
+
+logging:
+  config: file:config/log4j2.yml

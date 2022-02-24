@@ -80,7 +80,7 @@
                                 </dependsOn>
                                 <volumes>
                                     <bind>
-                                        <volume>${project.basedir}/src//test/config:/app/config</volume>
+                                        <volume>${project.basedir}/src/test/config/application.yml:/app/config/application.yml</volume>
                                     </bind>
                                 </volumes>
                                 <network>

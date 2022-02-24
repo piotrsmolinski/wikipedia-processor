@@ -1,0 +1,19 @@
+configuration:
+  status: warn
+  thresholdFilter:
+    level: debug
+  appenders:
+    console:
+      name: STDOUT
+      target: SYSTEM_OUT
+      patternLayout:
+        # This pattern is JVM Uniform Logging compatible (JEP-158 and JEP-271)
+        # Example GC log entry for -Xlog:gc::time,tags,tid,level
+        # [2022-01-13T22:42:48.211+0000][14][info][gc] GC(12) Pause Young (Normal) (G1 Evacuation Pause) 144M->14M(228M) 10.072ms
+        # Combining the JVM logs with application logs assumes both do write atomically
+        pattern: "[%d{ISO8601_OFFSET_DATE_TIME_HHMM}][%tid][%level{lowerCase=true}][application] %msg%n"
+  loggers:
+    root:
+      level: info
+      appenderRef:
+        ref: STDOUT
